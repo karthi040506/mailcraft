@@ -1,0 +1,2107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MailCraft — Internship Cold Email Generator</title>
+  <meta name="description"
+    content="Generate professional internship cold emails in seconds with MailCraft. Smart email generator with 3 variations, LinkedIn DMs, and PDF export." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-1: #0f0c29;
+      --bg-2: #302b63;
+      --bg-3: #24243e;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --accent-purple: #7c3aed;
+      --accent-blue: #3b82f6;
+      --accent-pink: #ec4899;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.45);
+      --input-bg: rgba(255, 255, 255, 0.07);
+      --input-border: rgba(255, 255, 255, 0.15);
+      --input-focus: rgba(124, 58, 237, 0.5);
+      --success: #10b981;
+      --danger: #ef4444;
+      --glow-purple: 0 0 20px rgba(124, 58, 237, 0.4);
+      --glow-blue: 0 0 20px rgba(59, 130, 246, 0.4);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-1);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      animation: fadeInBody 0.8s ease both;
+    }
+
+    @keyframes fadeInBody {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* ─── ANIMATED BACKGROUND ─────────────────────── */
+    .bg-animation {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+    }
+
+    .bg-animation::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(124, 58, 237, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(59, 130, 246, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 80%, rgba(236, 72, 153, 0.08) 0%, transparent 60%);
+    }
+
+    @keyframes gradientShift {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* ─── HEADER ──────────────────────────────────── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+      background: rgba(15, 12, 41, 0.8);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0 2rem;
+      animation: slideDown 0.6s ease both;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      gap: 1rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      box-shadow: var(--glow-purple);
+      animation: pulse 3s ease infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+      }
+
+      50% {
+        box-shadow: 0 0 35px rgba(124, 58, 237, 0.7);
+      }
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #fff, rgba(124, 58, 237, 0.9));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-tagline {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: none;
+      position: relative;
+      padding-bottom: 2px;
+    }
+
+    @media(min-width:768px) {
+      .header-tagline {
+        display: block;
+      }
+    }
+
+    .header-tagline::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 1px;
+      width: 0;
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
+      animation: underlineGrow 2s 1s ease forwards;
+    }
+
+    @keyframes underlineGrow {
+      to {
+        width: 100%;
+      }
+    }
+
+    .header-badge {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(59, 130, 246, 0.2));
+      border: 1px solid rgba(124, 58, 237, 0.4);
+      border-radius: 20px;
+      padding: 0.3rem 0.85rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #a78bfa;
+      white-space: nowrap;
+    }
+
+    /* ─── MAIN LAYOUT ─────────────────────────────── */
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .split-layout {
+      display: grid;
+      grid-template-columns: 40% 60%;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media(max-width: 1024px) {
+      .split-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ─── GLASS CARD ──────────────────────────────── */
+    .glass-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      backdrop-filter: blur(20px);
+      padding: 1.75rem;
+      transition: var(--transition);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-purple);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(124, 58, 237, 0.4), transparent);
+    }
+
+    /* ─── FORM ELEMENTS ───────────────────────────── */
+    .form-group {
+      margin-bottom: 1.1rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 0.45rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      transition: var(--transition);
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 0 3px var(--input-focus);
+      background: rgba(124, 58, 237, 0.08);
+    }
+
+    .form-control::placeholder {
+      color: var(--text-muted);
+    }
+
+    select.form-control option {
+      background: #1a1535;
+      color: #fff;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    @media(max-width: 480px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ─── SKILL TAGS ──────────────────────────────── */
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      padding: 0.6rem;
+      min-height: 42px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 10px;
+      cursor: text;
+      transition: var(--transition);
+    }
+
+    .tags-container:focus-within {
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 0 3px var(--input-focus);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.3), rgba(59, 130, 246, 0.3));
+      border: 1px solid rgba(124, 58, 237, 0.4);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #a78bfa;
+      animation: tagPop 0.2s ease;
+    }
+
+    @keyframes tagPop {
+      from {
+        transform: scale(0.7);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .tag-remove {
+      cursor: pointer;
+      width: 14px;
+      height: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      font-size: 0.65rem;
+      transition: var(--transition);
+    }
+
+    .tag-remove:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .tag-input {
+      flex: 1;
+      min-width: 100px;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      padding: 0.1rem 0.2rem;
+    }
+
+    .tag-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* ─── TONE / TYPE SELECTORS ───────────────────── */
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-option {
+      flex: 1;
+      min-width: 80px;
+      padding: 0.55rem 0.5rem;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+
+    .btn-option:hover {
+      border-color: var(--accent-purple);
+      color: #fff;
+    }
+
+    .btn-option.active {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.3), rgba(59, 130, 246, 0.3));
+      border-color: var(--accent-purple);
+      color: #fff;
+      box-shadow: 0 0 12px rgba(124, 58, 237, 0.3);
+    }
+
+    /* ─── CTA BUTTONS ─────────────────────────────── */
+    .btn-primary {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(124, 58, 237, 0.6);
+    }
+
+    .btn-primary:hover::before {
+      opacity: 1;
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      padding: 0.6rem 1rem;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background: var(--card-bg);
+      color: var(--text-secondary);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent-purple);
+      color: #fff;
+      background: rgba(124, 58, 237, 0.1);
+    }
+
+    .btn-clear {
+      width: 100%;
+      padding: 0.7rem;
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 0.75rem;
+    }
+
+    .btn-clear:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    /* ─── WORD COUNTER ────────────────────────────── */
+    .word-counter {
+      text-align: right;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+      transition: var(--transition);
+    }
+
+    .word-counter.warning {
+      color: #f59e0b;
+    }
+
+    /* ─── OUTPUT PANEL ────────────────────────────── */
+    .output-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .output-placeholder {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .output-placeholder .big-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      animation: floatIcon 3s ease infinite;
+    }
+
+    @keyframes floatIcon {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .output-placeholder h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+    }
+
+    .output-placeholder p {
+      font-size: 0.82rem;
+    }
+
+    /* ─── EMAIL CARDS ─────────────────────────────── */
+    .email-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      backdrop-filter: blur(20px);
+      overflow: hidden;
+      animation: slideInEmail 0.5s ease both;
+      transition: var(--transition);
+    }
+
+    .email-card:hover {
+      border-color: rgba(124, 58, 237, 0.3);
+      transform: translateY(-2px);
+    }
+
+    @keyframes slideInEmail {
+      from {
+        transform: translateX(30px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .email-card:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .email-card:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+
+    .email-card-header {
+      padding: 1rem 1.25rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .email-version-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.3rem 0.7rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .badge-v1 {
+      background: rgba(124, 58, 237, 0.25);
+      border: 1px solid rgba(124, 58, 237, 0.5);
+      color: #a78bfa;
+    }
+
+    .badge-v2 {
+      background: rgba(59, 130, 246, 0.25);
+      border: 1px solid rgba(59, 130, 246, 0.5);
+      color: #93c5fd;
+    }
+
+    .badge-v3 {
+      background: rgba(236, 72, 153, 0.25);
+      border: 1px solid rgba(236, 72, 153, 0.5);
+      color: #f9a8d4;
+    }
+
+    .email-type-badge {
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-muted);
+    }
+
+    .email-card-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-left: auto;
+    }
+
+    .email-card-body {
+      padding: 1.25rem;
+    }
+
+    .email-subject {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.4rem;
+    }
+
+    .email-subject-text {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(59, 130, 246, 0.1));
+      border: 1px solid rgba(124, 58, 237, 0.25);
+      border-radius: 8px;
+      padding: 0.6rem 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .email-body-text {
+      font-size: 0.83rem;
+      line-height: 1.75;
+      color: var(--text-secondary);
+      white-space: pre-wrap;
+      max-height: 220px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .email-body-text::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .email-body-text::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .email-body-text::-webkit-scrollbar-thumb {
+      background: rgba(124, 58, 237, 0.4);
+      border-radius: 2px;
+    }
+
+    .email-card-footer {
+      padding: 0.85rem 1.25rem;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .word-chip {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      color: var(--text-muted);
+    }
+
+    .btn-copy {
+      padding: 0.5rem 1rem;
+      border: 1px solid rgba(124, 58, 237, 0.4);
+      border-radius: 8px;
+      background: rgba(124, 58, 237, 0.15);
+      color: #a78bfa;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-copy:hover {
+      background: rgba(124, 58, 237, 0.3);
+      box-shadow: 0 0 12px rgba(124, 58, 237, 0.3);
+    }
+
+    .btn-copy.copied {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: var(--success);
+    }
+
+    .btn-download-txt {
+      padding: 0.5rem 0.85rem;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 8px;
+      background: rgba(59, 130, 246, 0.1);
+      color: #93c5fd;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-download-txt:hover {
+      background: rgba(59, 130, 246, 0.25);
+    }
+
+    /* ─── LINKEDIN DM ─────────────────────────────── */
+    .linkedin-card {
+      background: linear-gradient(135deg, rgba(10, 102, 194, 0.15), rgba(59, 130, 246, 0.1));
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 16px;
+      padding: 1.25rem;
+      animation: slideInEmail 0.5s 0.35s ease both;
+    }
+
+    .linkedin-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .linkedin-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: #0a66c2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.75rem;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .linkedin-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .linkedin-char-count {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+
+    .linkedin-body {
+      font-size: 0.83rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 8px;
+      padding: 0.85rem;
+      margin-bottom: 0.85rem;
+    }
+
+    /* ─── SUBJECT SUGGESTIONS ─────────────────────── */
+    .subject-suggestions {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.25rem;
+      animation: slideInEmail 0.5s 0.45s ease both;
+    }
+
+    .subject-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.65rem 0.85rem;
+      margin-bottom: 0.5rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .subject-item:hover {
+      border-color: rgba(124, 58, 237, 0.3);
+      background: rgba(124, 58, 237, 0.08);
+    }
+
+    .subject-num {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      font-size: 0.65rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .subject-text {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* ─── TIPS SIDEBAR ────────────────────────────── */
+    .tips-card {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(59, 130, 246, 0.07));
+      border: 1px solid rgba(124, 58, 237, 0.25);
+      border-radius: 16px;
+      padding: 1.25rem;
+    }
+
+    .tips-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      cursor: pointer;
+    }
+
+    .tips-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .tips-toggle {
+      transition: var(--transition);
+    }
+
+    .tips-toggle.collapsed {
+      transform: rotate(180deg);
+    }
+
+    .tips-body {
+      transition: var(--transition);
+      overflow: hidden;
+    }
+
+    .tip-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      animation: fadeInTip 0.3s ease both;
+    }
+
+    .tip-item:last-child {
+      border-bottom: none;
+    }
+
+    @keyframes fadeInTip {
+      from {
+        opacity: 0;
+        transform: translateX(-8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .tip-icon {
+      font-size: 1rem;
+      min-width: 24px;
+    }
+
+    .tip-text {
+      font-size: 0.78rem;
+      line-height: 1.55;
+      color: var(--text-secondary);
+    }
+
+    /* ─── LOADING SPINNER ─────────────────────────── */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(15, 12, 41, 0.7);
+      backdrop-filter: blur(6px);
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .loading-overlay.active {
+      display: flex;
+    }
+
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-top-color: var(--accent-purple);
+      border-right-color: var(--accent-blue);
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-text {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      animation: loadingPulse 1s ease infinite;
+    }
+
+    @keyframes loadingPulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.4;
+      }
+    }
+
+    /* ─── HISTORY PANEL ───────────────────────────── */
+    .history-panel {
+      margin-top: 2rem;
+    }
+
+    .history-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    .history-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1rem;
+      transition: var(--transition);
+      animation: fadeInHistory 0.4s ease both;
+    }
+
+    @keyframes fadeInHistory {
+      from {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .history-card:hover {
+      border-color: rgba(124, 58, 237, 0.3);
+    }
+
+    .history-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .history-meta {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    .history-company {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .history-role {
+      font-size: 0.75rem;
+      color: var(--accent-blue);
+    }
+
+    .history-snippet {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .history-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .btn-history-copy {
+      flex: 1;
+      padding: 0.45rem;
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      border-radius: 6px;
+      background: rgba(124, 58, 237, 0.1);
+      color: #a78bfa;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-history-copy:hover {
+      background: rgba(124, 58, 237, 0.25);
+    }
+
+    .btn-history-delete {
+      padding: 0.45rem 0.6rem;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 6px;
+      background: rgba(239, 68, 68, 0.08);
+      color: #fca5a5;
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-history-delete:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    .history-empty {
+      text-align: center;
+      padding: 2.5rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* ─── CONFETTI ────────────────────────────────── */
+    .confetti-piece {
+      position: fixed;
+      top: -10px;
+      z-index: 300;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      animation: confettiFall linear forwards;
+      pointer-events: none;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* ─── REGENERATE BUTTON ───────────────────────── */
+    .btn-regenerate {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.7rem 1.25rem;
+      border: 1px solid rgba(124, 58, 237, 0.4);
+      border-radius: 10px;
+      background: rgba(124, 58, 237, 0.12);
+      color: #a78bfa;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    .btn-regenerate:hover {
+      background: rgba(124, 58, 237, 0.25);
+      transform: translateY(-1px);
+    }
+
+    /* ─── PDF BUTTON ──────────────────────────────── */
+    .btn-pdf {
+      padding: 0.5rem 0.85rem;
+      border: 1px solid rgba(236, 72, 153, 0.3);
+      border-radius: 8px;
+      background: rgba(236, 72, 153, 0.08);
+      color: #f9a8d4;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-pdf:hover {
+      background: rgba(236, 72, 153, 0.2);
+    }
+
+    /* ─── FOOTER ──────────────────────────────────── */
+    footer {
+      margin-top: 4rem;
+      border-top: 1px solid var(--card-border);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    .footer-inner {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .footer-name {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .footer-email {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-digital-heroes {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.9rem 2rem;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      border: none;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--transition);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 4px 24px rgba(124, 58, 237, 0.5);
+      letter-spacing: -0.01em;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-digital-heroes::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent);
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .btn-digital-heroes:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.6), 0 8px 40px rgba(124, 58, 237, 0.7);
+    }
+
+    .btn-digital-heroes:hover::before {
+      opacity: 1;
+    }
+
+    .footer-social {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .social-link {
+      font-size: 0.75rem;
+      padding: 0.4rem 0.85rem;
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .social-link:hover {
+      border-color: var(--accent-purple);
+      color: #a78bfa;
+    }
+
+    .footer-copy {
+      margin-top: 1.5rem;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* ─── RESPONSIVE TWEAKS ───────────────────────── */
+    @media(max-width: 600px) {
+      main {
+        padding: 1rem;
+      }
+
+      .glass-card {
+        padding: 1.25rem;
+      }
+
+      .email-card-footer {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .email-card-actions {
+        flex-wrap: wrap;
+      }
+    }
+
+    /* ─── SCROLL BAR ──────────────────────────────── */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(124, 58, 237, 0.3);
+      border-radius: 3px;
+    }
+
+    /* ─── MISC UTILITIES ──────────────────────────── */
+    .flex-center {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .mt-sm {
+      margin-top: 0.5rem;
+    }
+
+    .mt-md {
+      margin-top: 1rem;
+    }
+
+    .text-muted {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Animated background -->
+  <div class="bg-animation"></div>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-text">Crafting your perfect emails…</div>
+  </div>
+
+  <!-- ─── HEADER ─────────────────────────────────────── -->
+  <header>
+    <div class="header-inner">
+      <a href="#" class="logo">
+        <div class="logo-icon">✉️</div>
+        <span class="logo-text">MailCraft</span>
+      </a>
+      <span class="header-tagline">Generate professional internship emails in seconds</span>
+      <span class="header-badge">✨ AI-Powered Templates</span>
+    </div>
+  </header>
+
+  <!-- ─── MAIN ───────────────────────────────────────── -->
+  <main>
+    <div class="split-layout">
+
+      <!-- ══════════════ LEFT PANEL ══════════════ -->
+      <div id="leftPanel" style="display:flex;flex-direction:column;gap:1.25rem;">
+
+        <!-- Personal Info -->
+        <div class="glass-card">
+          <div class="section-title">👤 Your Details</div>
+
+          <div class="form-group">
+            <label class="form-label" for="fullName">Full Name</label>
+            <input class="form-control" id="fullName" type="text" placeholder="e.g. Karthikeyan R" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="collegeName">College Name</label>
+            <input class="form-control" id="collegeName" type="text" placeholder="e.g. Anna University" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label" for="degreeBranch">Degree & Branch</label>
+              <input class="form-control" id="degreeBranch" type="text" placeholder="e.g. B.Tech CSE - AI/ML" />
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">Year</label>
+              <div class="btn-group" id="yearGroup">
+                <button class="btn-option" data-value="1st" onclick="selectOption('yearGroup',this,'1st')">1st</button>
+                <button class="btn-option" data-value="2nd" onclick="selectOption('yearGroup',this,'2nd')">2nd</button>
+                <button class="btn-option active" data-value="3rd"
+                  onclick="selectOption('yearGroup',this,'3rd')">3rd</button>
+                <button class="btn-option" data-value="4th" onclick="selectOption('yearGroup',this,'4th')">4th</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group mt-md">
+            <label class="form-label">Skills <span class="text-muted">(Press Enter or comma to add)</span></label>
+            <div class="tags-container" id="tagsContainer" onclick="document.getElementById('tagInput').focus()">
+              <input class="tag-input" id="tagInput" placeholder="e.g. Python, TensorFlow…" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Target Info -->
+        <div class="glass-card">
+          <div class="section-title">🎯 Target Details</div>
+
+          <div class="form-group">
+            <label class="form-label" for="companyName">Target Company</label>
+            <input class="form-control" id="companyName" type="text" placeholder="e.g. Google, OpenAI, Swiggy" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="targetRole">Target Role</label>
+            <input class="form-control" id="targetRole" type="text" placeholder="e.g. ML Engineer Intern" />
+            <div class="word-counter" id="roleCounter">0 chars</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email Tone</label>
+            <div class="btn-group" id="toneGroup">
+              <button class="btn-option active" data-value="Formal"
+                onclick="selectOption('toneGroup',this,'Formal');updateTips('Formal')">📋 Formal</button>
+              <button class="btn-option" data-value="Friendly"
+                onclick="selectOption('toneGroup',this,'Friendly');updateTips('Friendly')">😊 Friendly</button>
+              <button class="btn-option" data-value="Aggressive"
+                onclick="selectOption('toneGroup',this,'Aggressive');updateTips('Aggressive')">⚡ Confident</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email Type</label>
+            <div class="btn-group" id="typeGroup">
+              <button class="btn-option active" data-value="Cold Outreach"
+                onclick="selectOption('typeGroup',this,'Cold Outreach')">📧 Cold Outreach</button>
+              <button class="btn-option" data-value="Referral Request"
+                onclick="selectOption('typeGroup',this,'Referral Request')">🤝 Referral</button>
+              <button class="btn-option" data-value="Follow-up" onclick="selectOption('typeGroup',this,'Follow-up')">🔄
+                Follow-up</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tips Sidebar -->
+        <div class="tips-card" id="tipsCard">
+          <div class="tips-header" onclick="toggleTips()">
+            <span class="tips-title">💡 What makes a great cold email?</span>
+            <span class="tips-toggle" id="tipsToggle">▲</span>
+          </div>
+          <div class="tips-body" id="tipsBody">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Generate Button -->
+        <div class="glass-card" style="padding:1.25rem;">
+          <button class="btn-primary" id="generateBtn" onclick="generateEmails()">
+            <span>✨ Generate Emails</span>
+          </button>
+          <button class="btn-clear" onclick="clearForm()">🗑️ Clear All Fields</button>
+        </div>
+
+      </div>
+      <!-- ══════════════ END LEFT PANEL ══════════════ -->
+
+      <!-- ══════════════ RIGHT PANEL ══════════════ -->
+      <div class="output-panel" id="outputPanel">
+
+        <div class="glass-card output-placeholder" id="outputPlaceholder">
+          <div class="big-icon">📬</div>
+          <h3>Your emails will appear here</h3>
+          <p>Fill in your details on the left and hit<br /><strong>Generate Emails</strong> to craft 3 unique
+            variations.</p>
+        </div>
+
+      </div>
+      <!-- ══════════════ END RIGHT PANEL ══════════════ -->
+
+    </div>
+
+    <!-- ─── HISTORY PANEL ──────────────────────── -->
+    <div class="history-panel glass-card" id="historyPanel" style="margin-top:2rem;">
+      <div class="section-title">🕓 Recent Emails</div>
+      <div class="history-grid" id="historyGrid"></div>
+    </div>
+
+  </main>
+
+  <!-- ─── FOOTER ─────────────────────────────────────── -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-name">Karthikeyan R</div>
+      <div class="footer-email">karthikeyan9vibrant@gmail.com</div>
+
+      <a href="https://digitalheroesco.com" target="_blank" rel="noopener" class="btn-digital-heroes">
+        🚀 Built for Digital Heroes
+      </a>
+
+      <div class="footer-social">
+        <a href="#" class="social-link">🐙 GitHub</a>
+        <a href="#" class="social-link">💼 LinkedIn</a>
+        <a href="#" class="social-link">🐦 Twitter</a>
+        <a href="mailto:karthikeyan9vibrant@gmail.com" class="social-link">✉️ Email</a>
+      </div>
+
+      <div class="footer-copy">© 2025 MailCraft by Karthikeyan R — All rights reserved</div>
+    </div>
+  </footer>
+
+  <!-- ─── JAVASCRIPT ──────────────────────────────────── -->
+  <script>
+    /* =====================================================
+       STATE
+       ===================================================== */
+    let selectedYear = '3rd';
+    let selectedTone = 'Formal';
+    let selectedType = 'Cold Outreach';
+    let tags = [];
+    let generatedEmails = [];
+    let currentHistoryItems = [];
+
+    /* =====================================================
+       TIPS DATA
+       ===================================================== */
+    const tipsData = {
+      Formal: [
+        { icon: '📧', text: 'Keep subject line under 50 characters for higher open rates.' },
+        { icon: '🎯', text: 'Mention specific projects directly relevant to the role you\'re applying for.' },
+        { icon: '📎', text: 'Always attach your resume PDF — never just link to it.' },
+        { icon: '⏰', text: 'Send between 9–11 AM on Tuesday or Wednesday for best results.' },
+        { icon: '🔗', text: 'Include your GitHub profile and LinkedIn URL in the signature.' },
+      ],
+      Friendly: [
+        { icon: '😊', text: 'Open with a genuine compliment about the company\'s product or mission.' },
+        { icon: '🚀', text: 'Lead with your most exciting project — make them curious.' },
+        { icon: '💬', text: 'Keep it conversational but still professional. Avoid slang.' },
+        { icon: '🎯', text: 'Show you\'ve researched their product — mention a specific feature.' },
+        { icon: '📱', text: 'LinkedIn DM works better than email for early-stage startups.' },
+      ],
+      Aggressive: [
+        { icon: '⚡', text: 'Lead with results, not your background. Outcomes > credentials.' },
+        { icon: '🏆', text: 'Use numbers: "Built X model with Y accuracy used by Z users."' },
+        { icon: '🎯', text: 'Be direct — "I want to work on [specific product/team]."' },
+        { icon: '💪', text: 'Skip the fluff. Hiring managers are busy — respect their time.' },
+        { icon: '🔥', text: 'Follow up after 5 business days if you hear nothing.' },
+      ],
+    };
+
+    /* =====================================================
+       INIT
+       ===================================================== */
+    document.addEventListener('DOMContentLoaded', () => {
+      updateTips('Formal');
+      renderHistory();
+      initTagInput();
+      initRoleCounter();
+    });
+
+    /* =====================================================
+       OPTION SELECTORS
+       ===================================================== */
+    function selectOption(groupId, el, value) {
+      document.querySelectorAll(`#${groupId} .btn-option`).forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      if (groupId === 'yearGroup') selectedYear = value;
+      if (groupId === 'toneGroup') selectedTone = value;
+      if (groupId === 'typeGroup') selectedType = value;
+    }
+
+    /* =====================================================
+       TIPS
+       ===================================================== */
+    function updateTips(tone) {
+      const body = document.getElementById('tipsBody');
+      const tips = tipsData[tone] || tipsData.Formal;
+      body.innerHTML = tips.map((t, i) => `
+    <div class="tip-item" style="animation-delay:${i * 0.06}s">
+      <span class="tip-icon">${t.icon}</span>
+      <span class="tip-text">${t.text}</span>
+    </div>
+  `).join('');
+    }
+
+    let tipsVisible = true;
+    function toggleTips() {
+      tipsVisible = !tipsVisible;
+      const body = document.getElementById('tipsBody');
+      const toggle = document.getElementById('tipsToggle');
+      body.style.display = tipsVisible ? 'block' : 'none';
+      toggle.textContent = tipsVisible ? '▲' : '▼';
+      toggle.classList.toggle('collapsed', !tipsVisible);
+    }
+
+    /* =====================================================
+       SKILL TAGS
+       ===================================================== */
+    function initTagInput() {
+      const input = document.getElementById('tagInput');
+      input.addEventListener('keydown', e => {
+        if ((e.key === 'Enter' || e.key === ',') && input.value.trim()) {
+          e.preventDefault();
+          addTag(input.value.replace(',', '').trim());
+          input.value = '';
+        } else if (e.key === 'Backspace' && !input.value && tags.length) {
+          removeTag(tags.length - 1);
+        }
+      });
+    }
+
+    function addTag(value) {
+      if (!value || tags.includes(value)) return;
+      tags.push(value);
+      renderTags();
+    }
+
+    function removeTag(index) {
+      tags.splice(index, 1);
+      renderTags();
+    }
+
+    function renderTags() {
+      const container = document.getElementById('tagsContainer');
+      const input = document.getElementById('tagInput');
+      container.innerHTML = '';
+      tags.forEach((tag, i) => {
+        const el = document.createElement('span');
+        el.className = 'tag';
+        el.innerHTML = `${tag}<span class="tag-remove" onclick="removeTag(${i})">✕</span>`;
+        container.appendChild(el);
+      });
+      container.appendChild(input);
+      input.focus();
+    }
+
+    /* =====================================================
+       ROLE COUNTER
+       ===================================================== */
+    function initRoleCounter() {
+      const roleInput = document.getElementById('targetRole');
+      const counter = document.getElementById('roleCounter');
+      roleInput.addEventListener('input', () => {
+        const len = roleInput.value.length;
+        counter.textContent = `${len} chars`;
+        counter.classList.toggle('warning', len > 60);
+      });
+    }
+
+    /* =====================================================
+       FORM CLEAR
+       ===================================================== */
+    function clearForm() {
+      ['fullName', 'collegeName', 'degreeBranch', 'companyName', 'targetRole'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      tags = [];
+      renderTags();
+      document.getElementById('tagInput').placeholder = 'e.g. Python, TensorFlow…';
+    }
+
+    /* =====================================================
+       VALIDATION
+       ===================================================== */
+    function validateForm() {
+      const required = {
+        fullName: 'Full Name', collegeName: 'College Name', degreeBranch: 'Degree & Branch',
+        companyName: 'Company Name', targetRole: 'Target Role'
+      };
+      for (const [id, label] of Object.entries(required)) {
+        if (!document.getElementById(id).value.trim()) {
+          alert(`Please fill in: ${label}`);
+          document.getElementById(id).focus();
+          return false;
+        }
+      }
+      if (tags.length === 0) {
+        alert('Please add at least one skill.');
+        document.getElementById('tagInput').focus();
+        return false;
+      }
+      return true;
+    }
+
+    /* =====================================================
+       GET FORM VALUES
+       ===================================================== */
+    function getFormValues() {
+      return {
+        name: document.getElementById('fullName').value.trim(),
+        college: document.getElementById('collegeName').value.trim(),
+        degree: document.getElementById('degreeBranch').value.trim(),
+        year: selectedYear,
+        skills: tags,
+        company: document.getElementById('companyName').value.trim(),
+        role: document.getElementById('targetRole').value.trim(),
+        tone: selectedTone,
+        emailType: selectedType,
+      };
+    }
+
+    /* =====================================================
+       EMAIL GENERATION
+       ===================================================== */
+    function generateEmails() {
+      if (!validateForm()) return;
+      const v = getFormValues();
+
+      // Show loading
+      document.getElementById('loadingOverlay').classList.add('active');
+
+      setTimeout(() => {
+        document.getElementById('loadingOverlay').classList.remove('active');
+
+        const emails = [
+          generateVariation1(v),
+          generateVariation2(v),
+          generateVariation3(v),
+        ];
+        generatedEmails = emails;
+
+        const subjects = generateSubjects(v);
+        const linkedinDM = generateLinkedInDM(v);
+
+        renderOutput(emails, subjects, linkedinDM, v);
+        saveToHistory(v, emails[0]);
+        renderHistory();
+
+        // Smooth scroll to output on mobile
+        if (window.innerWidth < 1024) {
+          document.getElementById('outputPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 1500);
+    }
+
+    /* ───── VARIATION 1: Classic Professional ───── */
+    function generateVariation1(v) {
+      const skillsStr = v.skills.join(', ');
+      const topSkill = v.skills[0] || 'technology';
+      const subject = `${v.role} Application — ${v.college} Student`;
+
+      const body = `Dear Hiring Manager at ${v.company},
+
+I am ${v.name}, a ${v.year} year ${v.degree} student at ${v.college}. I am writing to express my sincere interest in the ${v.role} position at ${v.company}.
+
+Throughout my academic journey, I have developed a strong foundation in ${skillsStr}. I have applied these skills across several projects, consistently seeking to bridge the gap between theoretical knowledge and real-world impact. This drive motivates me to pursue an internship where I can contribute meaningfully from day one.
+
+${v.company} stands out to me for its commitment to innovation and its culture of pushing boundaries. I am particularly drawn to the work your team does, and I am confident that my background in ${v.degree} aligns well with the goals of the ${v.role} team.
+
+I would welcome the opportunity to discuss how my skills and enthusiasm can add value to your team. I have attached my resume for your review and am available at your earliest convenience for a brief call.
+
+Thank you for your time and consideration. I look forward to hearing from you.
+
+Warm regards,
+${v.name}
+${v.college} | ${v.degree} | ${v.year} Year`;
+
+      return { subject, body, variant: 'Classic Professional' };
+    }
+
+    /* ───── VARIATION 2: Story-Driven ───── */
+    function generateVariation2(v) {
+      const topSkill = v.skills[0] || 'technology';
+      const skill2 = v.skills[1] || v.skills[0];
+      const subject = `Quick intro — ${v.name} interested in ${v.role} at ${v.company}`;
+
+      const body = `Hi there,
+
+A few months ago, I was debugging a ${topSkill} pipeline at 2 AM — not out of obligation, but genuine curiosity. That moment crystallized something: this is the kind of problem I want to spend my career solving.
+
+I'm ${v.name}, a ${v.year} year ${v.degree} student at ${v.college}. My passion for ${topSkill} and ${skill2} has led me to build projects that go beyond coursework — from end-to-end systems to collaborative open-source contributions. Each one taught me that great engineering is part code, part curiosity, and part teamwork.
+
+When I look at ${v.company}, I see a company that embodies exactly that philosophy. Your work on cutting-edge problems in this space is something I follow closely, and it's why I'm reaching out specifically about the ${v.role} opportunity.
+
+I'd love to bring my energy and technical skills to your team this internship season. Would you be open to a 15-minute chat? I promise to make it worth your while.
+
+Looking forward,
+${v.name}
+${v.college} | ${v.degree}
+Skills: ${v.skills.join(' · ')}`;
+
+      return { subject, body, variant: 'Story-Driven' };
+    }
+
+    /* ───── VARIATION 3: Bold & Confident ───── */
+    function generateVariation3(v) {
+      const topSkill = v.skills[0] || 'technology';
+      const skillsStr = v.skills.slice(0, 3).join(', ');
+      const subject = `${topSkill} + ${v.degree} Student → ${v.role} at ${v.company}`;
+
+      const body = `Hi,
+
+I build with ${skillsStr}. I want to bring that to ${v.company}.
+
+Here's the short version: I'm ${v.name}, a ${v.year} year ${v.degree} student at ${v.college} who doesn't wait for opportunities — I create them. My projects aren't homework. They're products I built because I saw a gap and filled it.
+
+Why ${v.company}? Because you're doing work that actually matters in ${v.role}-related domains. I've studied what you're building, and I have ideas — not just willingness to fetch coffee.
+
+What I bring:
+• Deep hands-on experience in ${v.skills.join(', ')}
+• A bias for shipping, not just planning
+• The ability to ramp up fast and contribute in week one
+
+I'm not looking for a participation trophy internship. I want to work on real problems alongside people who care about quality.
+
+Are you open to a quick call this week?
+
+— ${v.name}
+${v.college} | ${v.year} Year ${v.degree}`;
+
+      return { subject, body, variant: 'Bold & Confident' };
+    }
+
+    /* ───── SUBJECTS ───── */
+    function generateSubjects(v) {
+      const topSkill = v.skills[0] || 'skills';
+      return [
+        `${v.role} Application — ${v.college} Student with ${topSkill}`,
+        `Quick intro — ${v.name} interested in ${v.role} at ${v.company}`,
+        `${topSkill} + ${v.degree} Student seeking ${v.role} opportunity`,
+      ];
+    }
+
+    /* ───── LINKEDIN DM ───── */
+    function generateLinkedInDM(v) {
+      const topSkill = v.skills[0] || 'tech';
+      const dm = `Hi! I'm ${v.name}, a ${v.year} year ${v.degree} student at ${v.college} skilled in ${topSkill}. I'm genuinely interested in the ${v.role} role at ${v.company} and would love to learn more. Would love to connect!`;
+      return dm.slice(0, 300);
+    }
+
+    /* =====================================================
+       WORD COUNT
+       ===================================================== */
+    function wordCount(text) {
+      return text.trim().split(/\s+/).filter(Boolean).length;
+    }
+
+    /* =====================================================
+       RENDER OUTPUT
+       ===================================================== */
+    const badgeClasses = ['badge-v1', 'badge-v2', 'badge-v3'];
+    const versionLabels = ['Version 1', 'Version 2', 'Version 3'];
+    const btnColors = ['btn-copy', 'btn-copy', 'btn-copy'];
+
+    function renderOutput(emails, subjects, linkedinDM, v) {
+      const panel = document.getElementById('outputPanel');
+      panel.innerHTML = '';
+
+      // Regenerate button
+      const regenDiv = document.createElement('div');
+      regenDiv.innerHTML = `<button class="btn-regenerate" onclick="generateEmails()">🔄 Regenerate Fresh Variations</button>`;
+      panel.appendChild(regenDiv);
+
+      // Email Cards
+      emails.forEach((email, i) => {
+        const wc = wordCount(email.body);
+        const card = document.createElement('div');
+        card.className = 'email-card';
+        card.id = `emailCard${i}`;
+        card.innerHTML = `
+      <div class="email-card-header">
+        <span class="email-version-badge ${badgeClasses[i]}">${versionLabels[i]}</span>
+        <span class="email-type-badge">${email.variant}</span>
+        <div class="email-card-actions">
+          <button class="btn-pdf" onclick="downloadPDF(${i})" title="Download PDF">📄 PDF</button>
+          <button class="btn-download-txt" onclick="downloadTXT(${i})" title="Download TXT">⬇️ TXT</button>
+          <button class="btn-copy" id="copyBtn${i}" onclick="copyEmail(${i})">📋 Copy</button>
+        </div>
+      </div>
+      <div class="email-card-body">
+        <div class="email-subject">Subject Line</div>
+        <div class="email-subject-text">${escapeHtml(email.subject)}</div>
+        <div class="email-body-text">${escapeHtml(email.body)}</div>
+      </div>
+      <div class="email-card-footer">
+        <span class="word-chip">📝 ${wc} words</span>
+        <span class="word-chip">${v.emailType}</span>
+        <span class="word-chip">${v.tone} tone</span>
+      </div>
+    `;
+        panel.appendChild(card);
+      });
+
+      // LinkedIn DM
+      const liCard = document.createElement('div');
+      liCard.className = 'linkedin-card';
+      liCard.innerHTML = `
+    <div class="linkedin-header">
+      <div class="linkedin-icon">in</div>
+      <span class="linkedin-title">LinkedIn Connection Message</span>
+      <span class="linkedin-char-count">${linkedinDM.length}/300 chars</span>
+    </div>
+    <div class="linkedin-body">${escapeHtml(linkedinDM)}</div>
+    <button class="btn-copy" id="copyLinkedin" onclick="copyText('copyLinkedin', \`${escapeTick(linkedinDM)}\`)">📋 Copy DM</button>
+  `;
+      panel.appendChild(liCard);
+
+      // Subject Suggestions
+      const subjCard = document.createElement('div');
+      subjCard.className = 'subject-suggestions glass-card';
+      subjCard.innerHTML = `
+    <div class="section-title">💡 Subject Line Suggestions</div>
+    ${subjects.map((s, i) => `
+      <div class="subject-item" onclick="copyText('subjBtn${i}', \`${escapeTick(s)}\`)" title="Click to copy">
+        <span class="subject-num">${i + 1}</span>
+        <span class="subject-text">${escapeHtml(s)}</span>
+      </div>
+    `).join('')}
+    <p class="text-muted mt-sm">Click any subject line to copy it</p>
+  `;
+      panel.appendChild(subjCard);
+    }
+
+    /* =====================================================
+       COPY / DOWNLOAD
+       ===================================================== */
+    function copyEmail(index) {
+      const email = generatedEmails[index];
+      if (!email) return;
+      const fullText = `Subject: ${email.subject}\n\n${email.body}`;
+      copyText(`copyBtn${index}`, fullText);
+      launchConfetti();
+    }
+
+    function copyText(btnId, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById(btnId);
+        if (btn) {
+          const orig = btn.innerHTML;
+          btn.innerHTML = '✅ Copied!';
+          btn.classList.add('copied');
+          setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+        }
+        launchConfetti();
+      }).catch(() => {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+        launchConfetti();
+      });
+    }
+
+    function downloadTXT(index) {
+      const email = generatedEmails[index];
+      if (!email) return;
+      const content = `Subject: ${email.subject}\n\n${email.body}`;
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `mailcraft_v${index + 1}.txt`;
+      a.click(); URL.revokeObjectURL(url);
+    }
+
+    function downloadPDF(index) {
+      const email = generatedEmails[index];
+      if (!email) return;
+
+      try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+        const margin = 50;
+        const pageW = doc.internal.pageSize.getWidth();
+        const maxW = pageW - margin * 2;
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(14);
+        doc.setTextColor(124, 58, 237);
+        doc.text('MailCraft — Internship Cold Email', margin, 50);
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(80, 80, 80);
+        doc.text(`Version ${index + 1} — ${email.variant}`, margin, 68);
+
+        doc.setDrawColor(200, 200, 220);
+        doc.line(margin, 76, pageW - margin, 76);
+
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(40, 40, 60);
+        doc.text('Subject:', margin, 96);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(60, 60, 80);
+        const subjectLines = doc.splitTextToSize(email.subject, maxW - 60);
+        doc.text(subjectLines, margin + 60, 96);
+
+        let y = 96 + subjectLines.length * 14 + 20;
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(40, 40, 60);
+        doc.text('Email Body:', margin, y);
+        y += 18;
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(40, 40, 40);
+        const bodyLines = doc.splitTextToSize(email.body, maxW);
+        bodyLines.forEach(line => {
+          if (y > 780) { doc.addPage(); y = 50; }
+          doc.text(line, margin, y);
+          y += 14;
+        });
+
+        doc.save(`mailcraft_v${index + 1}.pdf`);
+      } catch (e) {
+        alert('PDF export failed. Make sure jsPDF is loaded (you need an internet connection for the CDN).');
+        console.error(e);
+      }
+    }
+
+    /* =====================================================
+       CONFETTI
+       ===================================================== */
+    function launchConfetti() {
+      const colors = ['#7c3aed', '#3b82f6', '#ec4899', '#f59e0b', '#10b981', '#fff'];
+      for (let i = 0; i < 60; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.cssText = `
+      left: ${Math.random() * 100}%;
+      background: ${colors[Math.floor(Math.random() * colors.length)]};
+      width: ${Math.random() * 8 + 4}px;
+      height: ${Math.random() * 8 + 4}px;
+      border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+      animation-duration: ${Math.random() * 2 + 1.5}s;
+      animation-delay: ${Math.random() * 0.5}s;
+    `;
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 4000);
+      }
+    }
+
+    /* =====================================================
+       HISTORY (localStorage)
+       ===================================================== */
+    const HISTORY_KEY = 'mailcraft_history';
+
+    function saveToHistory(v, email) {
+      let history = getHistory();
+      history.unshift({
+        id: Date.now(),
+        company: v.company,
+        role: v.role,
+        name: v.name,
+        subject: email.subject,
+        body: email.body,
+        tone: v.tone,
+        timestamp: new Date().toLocaleString(),
+      });
+      history = history.slice(0, 5);
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    }
+
+    function getHistory() {
+      try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
+      catch { return []; }
+    }
+
+    function deleteHistory(id) {
+      let history = getHistory().filter(h => h.id !== id);
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const grid = document.getElementById('historyGrid');
+      const history = getHistory();
+      if (history.length === 0) {
+        grid.innerHTML = '<div class="history-empty">📭 No saved emails yet. Generate your first email above!</div>';
+        return;
+      }
+      grid.innerHTML = history.map(h => `
+    <div class="history-card" id="hcard_${h.id}">
+      <div class="history-card-top">
+        <div>
+          <div class="history-company">${escapeHtml(h.company)}</div>
+          <div class="history-role">${escapeHtml(h.role)}</div>
+          <div class="history-meta">${h.timestamp} · ${h.tone}</div>
+        </div>
+      </div>
+      <div class="history-snippet">${escapeHtml(h.subject)}</div>
+      <div class="history-actions">
+        <button class="btn-history-copy" onclick="copyText('hcopyBtn_${h.id}', \`${escapeTick('Subject: ' + h.subject + '\n\n' + h.body)}\`)">
+          📋 Quick Copy
+        </button>
+        <button class="btn-history-delete" onclick="deleteHistory(${h.id})">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+    }
+
+    /* =====================================================
+       UTILITIES
+       ===================================================== */
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function escapeTick(str) {
+      return String(str).replace(/`/g, '\\`').replace(/\$/g, '\\$');
+    }
+  </script>
+</body>
+
+</html>
