@@ -1,6 +1,4 @@
-Here's a professional README da! Go to GitHub → click **"Add a README"** → paste this:
 
-```markdown
 # MailCraft ✉️ — Internship Cold Email Generator
 
 > Generate professional internship cold emails in seconds.
