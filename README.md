@@ -1,3 +1,6 @@
+Here's a professional README da! Go to GitHub → click **"Add a README"** → paste this:
+
+```markdown
 # MailCraft ✉️ — Internship Cold Email Generator
 
 > Generate professional internship cold emails in seconds.
@@ -54,3 +57,70 @@ Built as part of the **Digital Heroes Trial Task**.
 ---
 
 ## 📁 Project Structure
+
+```
+mailcraft/
+│
+└── index.html      # Complete app — HTML + CSS + JS in single file
+```
+
+---
+
+## 🚀 Getting Started
+
+No installation needed! Just open the file:
+
+```bash
+git clone https://github.com/karthi040506/mailcraft.git
+cd mailcraft
+# Open index.html in any browser
+```
+
+Or visit the **[Live Demo](https://mailcraft-karthikeyan.vercel.app)** directly.
+
+---
+
+## 💡 How to Use
+
+1. Enter your **personal details** — name, college, degree, year, skills
+2. Enter **target details** — company name, role, tone, email type
+3. Click **✨ Generate Emails**
+4. Get **3 unique email variations** instantly
+5. **Copy, Download PDF, or Download TXT**
+6. Use the **LinkedIn DM** for connection requests
+7. Pick from **3 subject line suggestions**
+
+---
+
+## 📸 Screenshots
+
+> UI Preview — Dark glassmorphism theme with split layout
+
+---
+
+## 👨‍💻 Author
+
+**Karthikeyan R**
+- 🎓 B.Tech CSE (AI/ML) — SRM Institute of Science and Technology
+- 🐙 GitHub: [@karthi040506](https://github.com/karthi040506)
+- 📧 Email: karthikeyan9vibrant@gmail.com
+
+---
+
+## 🏆 Built for Digital Heroes
+
+This project was built as a trial task for **[Digital Heroes](https://digitalheroesco.com)** — a web development and eCommerce company working with U.S. clients.
+
+---
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+⭐ **If you found this useful, give it a star!**
+```
+
+---
+
