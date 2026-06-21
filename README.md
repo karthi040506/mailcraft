@@ -117,6 +117,6 @@ This project was built as a trial task for **[Digital Heroes](https://digitalher
 
 
 ⭐ **If you found this useful, give it a star!**
-```
+
 
 
