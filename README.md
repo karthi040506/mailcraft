@@ -13,7 +13,7 @@
 
 ## 🚀 Live Demo
 
-👉 **[View Live Tool](https://mailcraft-karthikeyan.vercel.app)**
+👉 **[View Live Tool](https://mailcraft-phi.vercel.app/)**
 
 ---
 
@@ -74,7 +74,7 @@ cd mailcraft
 # Open index.html in any browser
 ```
 
-Or visit the **[Live Demo](https://mailcraft-karthikeyan.vercel.app)** directly.
+Or visit the **[Live Demo](https://mailcraft-phi.vercel.app/)** directly.
 
 ---
 
@@ -94,6 +94,9 @@ Or visit the **[Live Demo](https://mailcraft-karthikeyan.vercel.app)** directly.
 
 > UI Preview — Dark glassmorphism theme with split layout
 
+> <img width="1918" height="990" alt="image" src="https://github.com/user-attachments/assets/0d87881a-fd95-4146-9c7d-6404057d4045" />
+
+
 ---
 
 ## 👨‍💻 Author
@@ -111,14 +114,9 @@ This project was built as a trial task for **[Digital Heroes](https://digitalher
 
 ---
 
-## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
-
----
 
 ⭐ **If you found this useful, give it a star!**
 ```
 
----
 
